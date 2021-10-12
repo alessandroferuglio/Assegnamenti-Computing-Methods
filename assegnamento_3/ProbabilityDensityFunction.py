@@ -24,14 +24,14 @@ class ProbabilityDensityFunction:
         '''
         return self.pdf.integral(x1, x2)
 
-    def random_in_pdf(self, n):
+    def random_in_pdf(self, numb):
         '''Genera n numeri casuali distribuiti secondo la distribuzioned di probabilità definita
         '''
         ycf = np.array([self.pdf.integral(self.x[0], xcf) for xcf in self.x])
         xppf, ippf = np.unique(ycf, return_index = True)
         yppf = self.x[ippf]
         inversecf = InterpolatedUnivariateSpline(xppf, yppf)
-        return inversecf(np.random.uniform(0., 1., size = n))
+        return inversecf(np.random.uniform(0., 1., size = numb))
 
 a = np.linspace(0., 1., 101)
 b = 2. * a
