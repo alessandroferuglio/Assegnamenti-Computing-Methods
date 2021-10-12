@@ -1,4 +1,5 @@
 import numpy as np
+import unittest
 from matplotlib import pyplot as plt
 from scipy.interpolate import InterpolatedUnivariateSpline
 
@@ -32,11 +33,38 @@ class ProbabilityDensityFunction:
         yppf = self.x[ippf]
         inversecf = InterpolatedUnivariateSpline(xppf, yppf)
         return inversecf(np.random.uniform(0., 1., size = numb))
+        
+class TestTriangular(unittest.TestCase):
+    '''Unit test con distribuzione triangolare
+    '''
 
-a = np.linspace(0., 1., 101)
-b = 2. * a
+    def test_prob_nel_punto(self):
+        '''Verifica calcolo della probabilità in diversi punti
+        '''
+        a = np.linspace(0., 1., 101)
+        b = 2. * a
+        pdf = ProbabilityDensityFunction(a, b)
+        self.assertAlmostEqual(pdf.prob_nel_punto(0), 0)
+        self.assertAlmostEqual(pdf.prob_nel_punto(0.5), 1)
+        self.assertAlmostEqual(pdf.prob_nel_punto(1), 2)
+        
+    def test_prob_in(self):
+        '''Verifica la probabilità calcolata in diversi intervalli
+        '''
+        a = np.linspace(0., 1., 101)
+        b = 2. * a
+        pdf = ProbabilityDensityFunction(a, b)
+        self.assertAlmostEqual(pdf.prob_in(0, 1), 1)
+        self.assertAlmostEqual(pdf.prob_in(0, 0.5), 0.25)
+        self.assertAlmostEqual(pdf.prob_in(0.5, 1), 0.75)
+        
+    def test_random_in_pdf(self):
+        '''Verifica che per un numero sufficientemente alto di numeri la distribuzione generata
+        tenda a quella triangolare'''
+        
+        
 
-test_triangular = ProbabilityDensityFunction(a, b)
-
-plt.hist(test_triangular.random_in_pdf(100000), bins = 50)
-plt.show()
+### Fa sì che runno lo unit test solo quando lo chiamo come 'python modulo.py' in maniera esplicita
+### e non quando faccio 'import modulo'
+if __name__ == '__main__':
+    unittest.main()
